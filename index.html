@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ODS 14: Vida na Água - Análise de Dados</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+</head>
+
+<body>
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar-nav">
+      <h2 class="sidebar-title"><i class="fa-solid fa-water"></i> ODS 14</h2>
+      <nav>
+        <ul>
+          <li><a href="#intro-ods14"><i class="fa-solid fa-info-circle"></i> Introdução</a></li>
+          <li><a href="#marine-protected-areas"><i class="fa-solid fa-fish"></i> Áreas Protegidas</a></li>
+          <li><a href="#coastal-eutrophication"><i class="fa-solid fa-vial"></i> Eutrofização</a></li>
+          <li><a href="#ratification-and-accession-to-unclos"><i class="fa-solid fa-file-signature"></i> Ratificação UNCLOS</a></li>
+          <li><a href="#illegal-fishing"><i class="fa-solid fa-anchor"></i> Pesca Ilegal</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Conteúdo -->
+    <main class="main-content">
+      <header class="main-header">
+        <h1 class="main-title">🌊 ODS 14: Vida na Água</h1>
+        <p class="main-subtitle">Análise interativa de indicadores-chave sobre os oceanos e recursos marinhos.</p>
+      </header>
+
+      <!-- Introdução -->
+      <section id="intro-ods14" class="content-section">
+        <h2 class="section-title">Introdução ao ODS 14</h2>
+        <p>
+          O Objetivo de Desenvolvimento Sustentável (ODS) 14 busca conservar e usar de forma sustentável os oceanos, mares e recursos marinhos. 
+          Aqui você pode visualizar dados reais sobre temas como áreas protegidas, eutrofização, ratificação de tratados e combate à pesca ilegal.
+        </p>
+        <p>Use os filtros de país e indicador abaixo para gerar gráficos interativos baseados em dados reais.</p>
+      </section>
+
+      <!-- Seções com gráficos -->
+      <section id="marine-protected-areas" class="content-section">
+        <h2 class="section-title"><i class="fa-solid fa-fish"></i> Áreas Marinhas Protegidas</h2>
+      </section>
+
+      <section id="coastal-eutrophication" class="content-section">
+        <h2 class="section-title"><i class="fa-solid fa-vial"></i> Eutrofização Costeira</h2>
+      </section>
+
+      <section id="ratification-and-accession-to-unclos" class="content-section">
+        <h2 class="section-title"><i class="fa-solid fa-file-signature"></i> Ratificação da UNCLOS</h2>
+      </section>
+
+      <section id="illegal-fishing" class="content-section">
+        <h2 class="section-title"><i class="fa-solid fa-anchor"></i> Pesca Ilegal</h2>
+      </section>
+
+      <footer class="footer">
+        <p>Desenvolvido para o Projeto ODS 14 - Vida na Água 🌎</p>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    // ===== Configuração dos arquivos CSV =====
+    const temas = [
+      { id: "marine-protected-areas", nome: "Áreas Marinhas Protegidas", arquivo: "marine-protected-areas.csv" },
+      { id: "coastal-eutrophication", nome: "Eutrofização Costeira", arquivo: "coastal-eutrophication.csv" },
+      { id: "ratification-and-accession-to-unclos", nome: "Ratificação / Acesso à UNCLOS", arquivo: "ratification-and-accession-to-unclos.csv" },
+      { id: "illegal-fishing", nome: "Regulação e Pesca Ilegal", arquivo: "regulation-illegal-fishing.csv" },
+    ];
+
+    document.addEventListener("DOMContentLoaded", () => {
+      temas.forEach(t => carregarTema(t));
+    });
+
+    function carregarTema(tema) {
+      const secao = document.getElementById(tema.id);
+      const container = document.createElement("div");
+      container.classList.add("chart-container");
+
+      // Filtros de País e Indicador
+      const filtroPais = document.createElement("select");
+      filtroPais.classList.add("apply-btn");
+      filtroPais.innerHTML = `<option value="">🌍 Selecione o país...</option>`;
+
+      const filtroIndicador = document.createElement("select");
+      filtroIndicador.classList.add("apply-btn");
+      filtroIndicador.innerHTML = `<option value="">📊 Selecione o indicador...</option>`;
+
+      const botao = document.createElement("button");
+      botao.classList.add("apply-btn");
+      botao.textContent = "Gerar Gráfico";
+
+      const canvas = document.createElement("canvas");
+
+      container.appendChild(filtroPais);
+      container.appendChild(filtroIndicador);
+      container.appendChild(botao);
+      container.appendChild(canvas);
+      secao.appendChild(container);
+
+      Papa.parse(tema.arquivo, {
+        download: true,
+        header: true,
+        complete: function (resultado) {
+          const dados = resultado.data.filter(d => d.Entity && d.Year);
+          const paises = [...new Set(dados.map(d => d.Entity))];
+          const indicadores = Object.keys(dados[0]).filter(k => !["Entity", "Code", "Year"].includes(k));
+
+          paises.forEach(p => {
+            const opt = document.createElement("option");
+            opt.value = p;
+            opt.textContent = p;
+            filtroPais.appendChild(opt);
+          });
+
+          indicadores.forEach(i => {
+            const opt = document.createElement("option");
+            opt.value = i;
+            opt.textContent = i;
+            filtroIndicador.appendChild(opt);
+          });
+
+          let chart;
+
+          botao.addEventListener("click", () => {
+            const pais = filtroPais.value;
+            const indicador = filtroIndicador.value;
+            if (!pais || !indicador) return alert("Selecione um país e um indicador para visualizar o gráfico.");
+
+            const filtrados = dados.filter(d => d.Entity === pais);
+            const anos = filtrados.map(d => d.Year);
+            const valores = filtrados.map(d => parseFloat(d[indicador]));
+
+            if (chart) chart.destroy();
+            chart = new Chart(canvas, {
+              type: "line",
+              data: {
+                labels: anos,
+                datasets: [{
+                  label: `${tema.nome} (${pais})`,
+                  data: valores,
+                  borderColor: "rgba(0, 191, 255, 0.9)",
+                  backgroundColor: "rgba(0, 191, 255, 0.2)",
+                  fill: true,
+                  tension: 0.4,
+                }]
+              },
+              options: {
+                responsive: true,
+                plugins: {
+                  legend: { labels: { color: "#b8e8ff" } },
+                  title: { display: true, text: tema.nome, color: "#00bfff" }
+                },
+                scales: {
+                  x: {
+                    ticks: { color: "#b8e8ff" },
+                    title: { display: true, text: "Ano", color: "#00bfff" }
+                  },
+                  y: {
+                    ticks: { color: "#b8e8ff" },
+                    title: { display: true, text: "Valor", color: "#00bfff" }
+                  }
+                }
+              }
+            });
+          });
+        }
+      });
+    }
+  </script>
+</body>
+</html>

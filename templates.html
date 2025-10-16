@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ODS 14: Vida na Água - Análise de Dados</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar de Navegação -->
+        <div class="sidebar-nav">
+            <h2 class="sidebar-title">ODS 14: Vida na Água</h2>
+            <nav>
+                <ul>
+                    <li><a href="#intro-ods14">Introdução ODS 14</a></li>
+                    {% for dataset in datasets %}
+                    <li><a href="#{{ dataset }}">{{ dataset.replace('-', ' ').title() }}</a></li>
+                    {% endfor %}
+                </ul>
+            </nav>
+        </div>
+        
+        <!-- Conteúdo Principal -->
+        <div class="main-content">
+            <header class="main-header">
+                <h1 class="main-title">🌊 ODS 14: Vida na Água</h1>
+                <p class="main-subtitle">Análise interativa de indicadores-chave para a saúde dos oceanos e recursos marinhos.</p>
+            </header>
+
+            <!-- Seção de Introdução ao ODS 14 (sem mudanças) -->
+            <section id="intro-ods14" class="content-section">
+                <h2 class="section-title">Introdução ao Objetivo de Desenvolvimento Sustentável 14</h2>
+                <p>O Objetivo de Desenvolvimento Sustentável (ODS) 14, "Vida na Água", é um dos 17 ODS estabelecidos pela Organização das Nações Unidas (ONU) em 2015. Ele visa conservar e usar de forma sustentável os oceanos, mares e recursos marinhos para o desenvolvimento sustentável.</p>
+                <!-- ... (resto da introdução igual ao anterior, omitido por brevidade) ... -->
+                <p>Esta página apresenta dados interativos relacionados a alguns desses indicadores, permitindo explorar tendências e progressos globais e por entidade.</p>
+            </section>
+
+            <!-- Seções Dinâmicas para Datasets (geradas via Jinja2) -->
+            {% for dataset in datasets %}
+            <section id="{{ dataset }}" class="content-section dataset-section">
+                <h2 class="section-title">{{ dataset.replace('-', ' ').title() }}</h2>
+                <p class="dataset-description">Descrição do dataset {{ dataset }} (carregada dinamicamente via API).</p>
+                <div class="dataset-filters">
+                    <div class="filter-group">
+                        <label for="{{ dataset }}-entities">Entidades:</label>
+                        <select id="{{ dataset }}-entities" multiple size="6"></select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Ano Mínimo:</label>
+                        <input type="range" id="{{ dataset }}-minYear" min="2000" max="2024" value="2000" step="1">
+                        <span id="{{ dataset }}-minYearDisplay">2000</span>
+                    </div>
+                    <div class="filter-group">
+                        <label>Ano Máximo:</label>
+                        <input type="range" id="{{ dataset }}-maxYear" min="2000" max="2024" value="2024" step="1">
+                        <span id="{{ dataset }}-maxYearDisplay">2024</span>
+                    </div>
+                    <button class="apply-btn" data-dataset="{{ dataset }}">Aplicar Filtros</button>
+                </div>
+                <div class="loader" id="{{ dataset }}-loader">Carregando dados...</div>
+                <canvas id="{{ dataset }}-trendChart" width="800" height="400"></canvas>
+                <h3 class="sub-section-title">Dados Detalhados</h3>
+                <div class="warning" id="{{ dataset }}-dataWarning"></div>
+                <table id="{{ dataset }}-dataTable"><thead><tr><th>Entidade</th><th>Ano</th><th>Valor</th></tr></thead><tbody></tbody></table>
+                <h3 class="sub-section-title">Média por Entidade</h3>
+                <table id="{{ dataset }}-avgTable"><thead><tr><th>Entidade</th><th>Média do Valor</th></tr></thead><tbody></tbody></table>
+                <h3 class="sub-section-title">Progresso/Regressão</h3>
+                <table id="{{ dataset }}-progressTable"><thead><tr><th>Entidade</th><th>Primeiro Ano</th><th>Valor Inicial</th><th>Último Ano</th><th>Valor Final</th><th>Mudança Absoluta</th><th>Mudança Percentual (%)</th></tr></thead><tbody></tbody></table>
+                <p class="dataset-citation" id="{{ dataset }}-citation"></p>
+            </section>
+            {% endfor %}
+
+            <footer class="footer">
+                <p>Desenvolvido com Flask para o Projeto ODS 14 - Vida na Água</p>
+            </footer>
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
