@@ -1,8 +1,7 @@
 # 🌊 Mini Trabalho — Análise de Dados Marinhos
 
-Este projeto tem como objetivo apresentar e visualizar dados relacionados a temas marinhos e ambientais, como **áreas marinhas protegidas**, **pesca ilegal** e **eutrofização costeira**.  
+Este projeto tem como objetivo apresentar e visualizar dados relacionados a temas marinhos e ambientais, como **áreas marinhas protegidas**, **pesca ilegal** e **eutrofização costeira**.
 Ele utiliza arquivos CSV com dados reais e os exibe em uma interface web interativa.
-
 
 ## 📁 Estrutura do Projeto
 
