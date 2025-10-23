@@ -44,8 +44,6 @@ FEW, S. Information Dashboard Design: Displaying Data for At-a-Glance Monitoring
 
 McKINNEY, W. Python for Data Analysis: Data Wrangling with Pandas, NumPy, and IPython. 2nd ed. Sebastopol: O'Reilly Media, 2017. 
 
-STREAMLIT. Streamlit Documentation. 2023. Disponível em: https://docs.streamlit.io/ 
-
 UNITED NATIONS. Transforming our world: the 2030 Agenda for Sustainable Development. New York: United Nations, 2015. 
 
 UNITED NATIONS. The Sustainable Development Goals Report 2022. New York: United Nations, 2022 
